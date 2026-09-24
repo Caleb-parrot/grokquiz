@@ -1,11 +1,11 @@
 # Maintainer: Caleb-parrot <288791519+Caleb-parrot@users.noreply.github.com>
-pkgname=grokquiz
+pkgname=quizgrok
 pkgver=0.1.0
-pkgrel=5
+pkgrel=1
 pkgdesc='Grokipedia streak quiz for the terminal'
 arch=('x86_64')
-url='https://github.com/Caleb-parrot/grokquiz'
-license=('LicenseRef-grokquiz')
+url='https://github.com/Caleb-parrot/quizgrok'
+license=('LicenseRef-quizgrok')
 depends=('glibc' 'xdg-terminal-exec')
 makedepends=('go')
 options=('!debug')
@@ -27,7 +27,7 @@ build() {
   export CGO_CXXFLAGS="${CXXFLAGS}"
   export CGO_LDFLAGS="${LDFLAGS}"
   export GOFLAGS="-buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw"
-  go build -o grokquiz .
+  go build -o quizgrok .
 }
 
 check() {
@@ -37,7 +37,7 @@ check() {
 }
 
 package() {
-  install -Dm755 "$srcdir/build/grokquiz" "$pkgdir/usr/bin/grokquiz"
-  install -Dm644 "$startdir/grokquiz.desktop" "$pkgdir/usr/share/applications/grokquiz.desktop"
+  install -Dm755 "$srcdir/build/quizgrok" "$pkgdir/usr/bin/quizgrok"
+  install -Dm644 "$startdir/quizgrok.desktop" "$pkgdir/usr/share/applications/quizgrok.desktop"
   install -Dm644 "$startdir/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }

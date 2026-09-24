@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/caleb-parrot/grokquiz/internal/game"
-	"github.com/caleb-parrot/grokquiz/internal/grok"
-	"github.com/caleb-parrot/grokquiz/internal/quiz"
+	"github.com/caleb-parrot/quizgrok/internal/game"
+	"github.com/caleb-parrot/quizgrok/internal/grok"
+	"github.com/caleb-parrot/quizgrok/internal/quiz"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
@@ -240,7 +240,7 @@ func (m *model) startDraw() tea.Cmd {
 
 func (m model) View() string {
 	if m.width == 0 || m.height == 0 {
-		return "Grokquiz\n"
+		return "Quizgrok\n"
 	}
 	box := frameStyle.Render(m.body())
 	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, box)
@@ -274,14 +274,14 @@ func (m model) body() string {
 
 func (m model) viewMenu() string {
 	var b strings.Builder
-	b.WriteString(titleStyle.Render("GROKQUIZ"))
+	b.WriteString(titleStyle.Render("QUIZGROK"))
 	b.WriteByte('\n')
 	b.WriteString(mutedStyle.Render("One miss ends the run."))
 	b.WriteString("\n\n")
 	b.WriteString(spread(bodyStyle.Render("Best this sitting"), goldStyle.Render(fmt.Sprintf("%d", m.run.Best)), m.inner()))
 	b.WriteString("\n\n")
 	for i, c := range m.cats {
-		line := fmt.Sprintf(" %d  %s", i+1, c.Name)
+		line := fmt.Sprintf(" %2s  %s", menuKey(i), c.Name)
 		if i == m.cursor {
 			b.WriteString(selStyle.Width(m.inner()).Render(line))
 		} else {
@@ -381,7 +381,7 @@ func (m model) viewTrouble() string {
 }
 
 func (m model) head() string {
-	name := "Grokquiz"
+	name := "Quizgrok"
 	if m.cat != nil {
 		name = m.cat.Name
 	}
@@ -396,8 +396,18 @@ func spread(left, right string, width int) string {
 	return left + strings.Repeat(" ", gap) + right
 }
 
+func menuKey(i int) string {
+	if i == 9 {
+		return "0"
+	}
+	return fmt.Sprintf("%d", i+1)
+}
+
 func menuNumber(key string) (int, bool) {
-	if len(key) != 1 || key[0] < '1' || key[0] > '8' {
+	if key == "0" {
+		return 9, true
+	}
+	if len(key) != 1 || key[0] < '1' || key[0] > '9' {
 		return 0, false
 	}
 	return int(key[0] - '1'), true

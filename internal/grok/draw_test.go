@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/benoute/grokipedia-mcp/pkg/grokipedia"
-	"github.com/caleb-parrot/grokquiz/internal/quiz"
+	"github.com/caleb-parrot/quizgrok/internal/quiz"
 )
 
 func batch() []grokipedia.SearchResult {
@@ -32,7 +32,7 @@ func TestDrawSkipsRateLimit(t *testing.T) {
 		}
 		return batch(), nil
 	}}
-	q, err := c.Draw(context.Background(), quiz.Category{Name: "Space", Query: "astronomy"}, nil)
+	q, err := c.Draw(context.Background(), quiz.Category{Name: "Space", Queries: []string{"astronomy"}}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -48,7 +48,7 @@ func TestDrawRateLimitFails(t *testing.T) {
 	c := &Client{search: func(context.Context, string, int, int) ([]grokipedia.SearchResult, error) {
 		return nil, fmt.Errorf("API error: HTTP 503")
 	}}
-	_, err := c.Draw(context.Background(), quiz.Category{Name: "Space", Query: "astronomy"}, nil)
+	_, err := c.Draw(context.Background(), quiz.Category{Name: "Space", Queries: []string{"astronomy"}}, nil)
 	if err == nil || !strings.Contains(err.Error(), "503") {
 		t.Fatal(err)
 	}
@@ -60,7 +60,7 @@ func TestDrawUsesRandomSearchHits(t *testing.T) {
 		queries = append(queries, query)
 		return batch(), nil
 	}}
-	q, err := c.Draw(context.Background(), quiz.Category{Name: "Space", Query: "astronomy"}, nil)
+	q, err := c.Draw(context.Background(), quiz.Category{Name: "Space", Queries: []string{"astronomy"}}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -91,7 +91,7 @@ func TestDrawSkipsAskedTopic(t *testing.T) {
 		})
 		return hits, nil
 	}}
-	q, err := c.Draw(context.Background(), quiz.Category{Name: "Space", Query: "astronomy"}, map[string]bool{"mars": true})
+	q, err := c.Draw(context.Background(), quiz.Category{Name: "Space", Queries: []string{"astronomy"}}, map[string]bool{"mars": true})
 	if err != nil {
 		t.Fatal(err)
 	}

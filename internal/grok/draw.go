@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/benoute/grokipedia-mcp/pkg/grokipedia"
-	"github.com/caleb-parrot/grokquiz/internal/quiz"
+	"github.com/caleb-parrot/quizgrok/internal/quiz"
 )
 
 // SearchFunc is grokipedia.Search, or a stand-in in tests.
@@ -78,7 +78,7 @@ func (c *Client) drawOpen(ctx context.Context, cat quiz.Category, avoid map[stri
 func (c *Client) oneOpen(ctx context.Context, cat quiz.Category, avoid map[string]bool, rng *rand.Rand, offset int) (quiz.Question, error) {
 	ctx, cancel := context.WithTimeout(ctx, 8*time.Second)
 	defer cancel()
-	results, err := c.search(ctx, searchQuery(cat), 12, offset)
+	results, err := c.search(ctx, searchQuery(cat, rng), 12, offset)
 	if err != nil {
 		return quiz.Question{}, err
 	}
@@ -147,9 +147,13 @@ func junkTitle(title string) bool {
 	return false
 }
 
-func searchQuery(cat quiz.Category) string {
-	if q := strings.TrimSpace(cat.Query); q != "" {
-		return q
+func searchQuery(cat quiz.Category, rng *rand.Rand) string {
+	if len(cat.Queries) == 0 {
+		return cat.Name
 	}
-	return cat.Name
+	q := strings.TrimSpace(cat.Queries[rng.IntN(len(cat.Queries))])
+	if q == "" {
+		return cat.Name
+	}
+	return q
 }

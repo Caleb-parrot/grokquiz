@@ -1,4 +1,4 @@
-# grokquiz
+# quizgrok
 
 A local quiz in the terminal. Pick a category, then answer until you miss. The streak counts correct answers in a row.
 
@@ -9,39 +9,39 @@ Built for [Omarchy](https://omarchy.org/). It is a TUI app, not an Omarchy shell
 ## Install on Arch / Omarchy
 
 ```bash
-git clone https://github.com/Caleb-parrot/grokquiz.git
-cd grokquiz
+git clone https://github.com/Caleb-parrot/quizgrok.git
+cd quizgrok
 makepkg -si
 ```
 
-That installs `/usr/bin/grokquiz` and a Super+Space launcher named **Grokquiz**.
+That installs `/usr/bin/quizgrok` and a Super+Space launcher named **Quizgrok**.
 
 `makepkg -s` installs Go from pacman. If Go is already on `PATH` from somewhere else, use `makepkg -si --nodeps` instead.
 
 If you already have Go and do not want a package:
 
 ```bash
-git clone https://github.com/Caleb-parrot/grokquiz.git
-cd grokquiz
-go build -o ~/.local/bin/grokquiz .
-omarchy tui install Grokquiz ~/.local/bin/grokquiz tile applications-games
+git clone https://github.com/Caleb-parrot/quizgrok.git
+cd quizgrok
+go build -o ~/.local/bin/quizgrok .
+omarchy tui install Quizgrok ~/.local/bin/quizgrok tile applications-games
 ```
 
 Optional Super-menu row — add this to `~/.config/omarchy/extensions/omarchy-menu.jsonc`:
 
 ```jsonc
-"grokquiz": {
+"quizgrok": {
   "icon": "",
-  "label": "Grokquiz",
+  "label": "Quizgrok",
   "description": "Grokipedia streak quiz",
-  "action": "omarchy-launch-or-focus-tui --app-id=TUI.tile grokquiz"
+  "action": "omarchy-launch-or-focus-tui --app-id=TUI.tile quizgrok"
 }
 ```
 
 Run from a checkout without installing:
 
 ```bash
-cd grokquiz
+cd quizgrok
 go run .
 ```
 
@@ -55,7 +55,7 @@ go run . -draw Space
 
 | Key | Where | What |
 | --- | --- | --- |
-| `1`-`8`, `j`/`k`, enter | Menu | Choose a category |
+| `1`-`9`, `0`, `j`/`k`, enter | Menu | Choose a category |
 | `a`-`d` or `1`-`4` | Question | Answer |
 | `j`/`k`, enter | Question | Move and pick |
 | enter | Miss | Same category, streak back to zero |

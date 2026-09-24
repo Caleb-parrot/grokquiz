@@ -90,12 +90,12 @@ func TestBuildRejectsThinSnippet(t *testing.T) {
 }
 
 func TestCategoriesHaveRoomForChoices(t *testing.T) {
-	if len(Categories) != 8 {
+	if len(Categories) != 10 {
 		t.Fatalf("menu %d", len(Categories))
 	}
 	seen := map[string]bool{}
 	for _, c := range Categories {
-		if c.Name == "" || c.Query == "" {
+		if c.Name == "" || len(c.Queries) == 0 {
 			t.Fatalf("empty category: %+v", c)
 		}
 		if seen[c.Name] {

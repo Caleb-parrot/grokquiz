@@ -17,10 +17,10 @@ const (
 )
 
 // Category is one row in the start menu.
-// Query is sent to Grokipedia as a live search. It is not a list of questions.
+// Queries are search phrases. Each question picks one at random.
 type Category struct {
-	Name  string
-	Query string
+	Name    string
+	Queries []string
 }
 
 // Hit is the slice of a search result the quiz needs.

@@ -1,8 +1,8 @@
 [Desktop Entry]
 Version=1.0
-Name=Grokquiz
+Name=Quizgrok
 Comment=Grokipedia streak quiz — one miss ends the run
-Exec=xdg-terminal-exec --app-id=TUI.tile -e grokquiz
+Exec=xdg-terminal-exec --app-id=TUI.tile -e quizgrok
 Terminal=false
 Type=Application
 Icon=applications-games

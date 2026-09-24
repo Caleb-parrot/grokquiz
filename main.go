@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/caleb-parrot/grokquiz/internal/grok"
-	"github.com/caleb-parrot/grokquiz/internal/quiz"
-	"github.com/caleb-parrot/grokquiz/internal/tui"
+	"github.com/caleb-parrot/quizgrok/internal/grok"
+	"github.com/caleb-parrot/quizgrok/internal/quiz"
+	"github.com/caleb-parrot/quizgrok/internal/tui"
 )
 
 func main() {
@@ -61,16 +61,16 @@ func drawOnce(c *grok.Client, name string) error {
 }
 
 func usage() string {
-	return `grokquiz — one miss ends the run
+	return `quizgrok — one miss ends the run
 
-  grokquiz                 category menu, then live questions
-  grokquiz -draw Science   print one question and exit
+  quizgrok                 category menu, then live questions
+  quizgrok -draw Science   print one question and exit
 
 Questions come from Grokipedia search at the moment they are asked.
 Nothing is written to disk. The streak lasts until you quit.
 
 TUI keys:
-  1-8 enter       pick a category
+  1-9, 0 enter    pick a category
   j/k             move
   a-d or 1-4      answer
   enter           start, pick, or play again
