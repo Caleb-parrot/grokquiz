@@ -1,0 +1,5 @@
+/grokquiz
+/pkg/
+/src/
+*.pkg.tar.*
+*.pkg.tar.zst
