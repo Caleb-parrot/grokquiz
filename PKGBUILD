@@ -1,11 +1,11 @@
 # Maintainer: Caleb-parrot <288791519+Caleb-parrot@users.noreply.github.com>
 pkgname=grokquiz
 pkgver=0.1.0
-pkgrel=2
+pkgrel=3
 pkgdesc='Grokipedia streak quiz for the terminal'
 arch=('x86_64')
 url='https://github.com/Caleb-parrot/grokquiz'
-license=('MIT')
+license=('LicenseRef-grokquiz')
 depends=('glibc' 'xdg-terminal-exec')
 makedepends=('go')
 options=('!debug')

@@ -78,4 +78,4 @@ Grokipedia's full-text search mixes in loosely related pages, so a category is a
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+All rights reserved. See [LICENSE](LICENSE).
