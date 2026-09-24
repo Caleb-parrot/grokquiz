@@ -61,6 +61,31 @@ func TestDrawRateLimitFails(t *testing.T) {
 	}
 }
 
+func TestDrawContinuesAfterNamedTopics(t *testing.T) {
+	c := &Client{search: func(_ context.Context, query string, _, _ int) ([]grokipedia.SearchResult, error) {
+		if query != "Space" {
+			return []grokipedia.SearchResult{{Title: "Nope", Snippet: "not the article"}}, nil
+		}
+		return []grokipedia.SearchResult{
+			{Title: "Europa", Slug: "Europa", Snippet: "Europa is an icy moon of Jupiter with a subsurface ocean about 100 kilometers deep."},
+			{Title: "Titan", Slug: "Titan", Snippet: "Titan is the largest moon of Saturn and the only moon known to have a dense atmosphere."},
+			{Title: "Ganymede", Slug: "Ganymede", Snippet: "Ganymede is the largest moon in the Solar System and the only moon with its own magnetic field."},
+			{Title: "Callisto", Slug: "Callisto", Snippet: "Callisto is a moon of Jupiter with an ancient cratered surface and a possible subsurface ocean."},
+		}, nil
+	}}
+	cat := quiz.Category{Name: "Space", Queries: []string{"Mars", "Venus", "Jupiter", "Saturn"}}
+	avoid := map[string]bool{"mars": true, "venus": true, "jupiter": true, "saturn": true}
+	q, err := c.Draw(context.Background(), cat, avoid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	switch q.Topic {
+	case "Europa", "Titan", "Ganymede", "Callisto":
+	default:
+		t.Fatalf("topic %q", q.Topic)
+	}
+}
+
 func TestDrawSkipsAskedTopic(t *testing.T) {
 	var asked []string
 	c := &Client{search: func(_ context.Context, query string, _, _ int) ([]grokipedia.SearchResult, error) {

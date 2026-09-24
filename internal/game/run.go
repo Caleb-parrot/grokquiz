@@ -48,15 +48,3 @@ func (r *Run) Answer(i int) bool {
 	r.Used[r.Q.Key] = true
 	return true
 }
-
-// Open reports how many category queries are still unused.
-func (r *Run) Open(n int) int {
-	if r.Used == nil {
-		return n
-	}
-	used := len(r.Used)
-	if used > n {
-		return 0
-	}
-	return n - used
-}

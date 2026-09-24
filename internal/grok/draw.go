@@ -70,10 +70,110 @@ func (c *Client) Draw(ctx context.Context, cat quiz.Category, avoid map[string]b
 		}
 		return q, nil
 	}
+	q, err := c.drawOpen(ctx, cat, avoid, rng)
+	if err == nil {
+		return q, nil
+	}
+	if last == nil {
+		last = err
+	}
+	return quiz.Question{}, fmt.Errorf("%s: %w", cat.Name, last)
+}
+
+// drawOpen keeps a run going after the named topics have been asked.
+// It searches the category at a random offset and builds a question from
+// whatever articles come back. A long streak is allowed to repeat a topic
+// rather than stop.
+func (c *Client) drawOpen(ctx context.Context, cat quiz.Category, avoid map[string]bool, rng *rand.Rand) (quiz.Question, error) {
+	var last error
+	for attempt := 0; attempt < 4; attempt++ {
+		q, err := c.oneOpen(ctx, cat, avoid, rng, rng.IntN(160))
+		if err == nil {
+			return q, nil
+		}
+		last = err
+	}
+	q, err := c.oneOpen(ctx, cat, nil, rng, rng.IntN(160))
+	if err == nil {
+		return q, nil
+	}
+	if last == nil {
+		last = err
+	}
 	if last == nil {
 		last = errNoMatch
 	}
-	return quiz.Question{}, fmt.Errorf("%s: %w", cat.Name, last)
+	return quiz.Question{}, last
+}
+
+func (c *Client) oneOpen(ctx context.Context, cat quiz.Category, avoid map[string]bool, rng *rand.Rand, offset int) (quiz.Question, error) {
+	ctx, cancel := context.WithTimeout(ctx, 8*time.Second)
+	defer cancel()
+	results, err := c.search(ctx, cat.Name, 8, offset)
+	if err != nil {
+		return quiz.Question{}, err
+	}
+	hits := usableHits(results, avoid)
+	if len(hits) == 0 {
+		return quiz.Question{}, errNoMatch
+	}
+	rng.Shuffle(len(hits), func(i, j int) {
+		hits[i], hits[j] = hits[j], hits[i]
+	})
+	var last error
+	for i, answer := range hits {
+		names := make([]string, 0, len(hits)-1+3)
+		for j, h := range hits {
+			if j == i {
+				continue
+			}
+			names = append(names, h.Title)
+		}
+		names = append(names, distractors(cat, answer.Title, rng)...)
+		q, err := quiz.Build(answer, names, rng)
+		if err == nil {
+			return q, nil
+		}
+		last = err
+	}
+	if last == nil {
+		last = errNoMatch
+	}
+	return quiz.Question{}, last
+}
+
+func usableHits(results []grokipedia.SearchResult, avoid map[string]bool) []quiz.Hit {
+	var hits []quiz.Hit
+	seen := map[string]bool{}
+	for _, r := range results {
+		title := strings.TrimSpace(r.Title)
+		if title == "" || strings.TrimSpace(r.Snippet) == "" || junkTitle(title) {
+			continue
+		}
+		key := quiz.Fold(title)
+		if key == "" || seen[key] {
+			continue
+		}
+		if avoid[key] || (r.Slug != "" && avoid[quiz.Fold(r.Slug)]) {
+			continue
+		}
+		seen[key] = true
+		hits = append(hits, quiz.Hit{Title: title, Slug: r.Slug, Snippet: r.Snippet})
+	}
+	return hits
+}
+
+func junkTitle(title string) bool {
+	t := strings.ToLower(title)
+	for _, bad := range []string{
+		"(film)", "(album)", "(band)", "(ep)", "(song)", "(novel)",
+		"(tv", "inc.", "cryptocurrency",
+	} {
+		if strings.Contains(t, bad) {
+			return true
+		}
+	}
+	return false
 }
 
 func (c *Client) lookup(ctx context.Context, query string) (quiz.Hit, error) {

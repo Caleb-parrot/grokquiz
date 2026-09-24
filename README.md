@@ -74,7 +74,7 @@ internal/game           streak, in memory
 internal/tui            menu and question screen
 ```
 
-Grokipedia's full-text search mixes in loosely related pages, so a category is a list of topic names. The game picks one at random, searches it, and keeps the hit whose title matches. A 429 or 5xx skips that draw and tries another topic. The article text is never written to disk.
+Each category starts from a short list of topic names, then keeps searching Grokipedia for new articles, so a round lasts until you miss. A 429 or 5xx skips that draw and tries another topic. The article text is never written to disk.
 
 ## License
 

@@ -226,16 +226,6 @@ func (m *model) startDraw() tea.Cmd {
 	if m.cat == nil {
 		return nil
 	}
-	if m.run.Open(len(m.cat.Queries)) < 1 {
-		last := ""
-		if m.run.Q != nil {
-			last = m.run.Q.Key
-		}
-		m.run.Used = map[string]bool{}
-		if last != "" {
-			m.run.Used[last] = true
-		}
-	}
 	m.phase = phaseLoad
 	m.gen++
 	gen := m.gen
