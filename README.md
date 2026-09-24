@@ -69,12 +69,12 @@ Best streak on the menu is for this sitting only.
 ```
 cmd is main.go          TUI entry
 internal/quiz           categories, snippet trim, four choices
-internal/grok           live search, exact-title match, 8s timeout
+internal/grok           random category search, 8s timeout
 internal/game           streak, in memory
 internal/tui            menu and question screen
 ```
 
-Each category starts from a short list of topic names, then keeps searching Grokipedia for new articles, so a round lasts until you miss. A 429 or 5xx skips that draw and tries another topic. The article text is never written to disk.
+Every question is a random Grokipedia search in the category you picked, so a round lasts until you miss. A 429 or 5xx skips that draw and tries another page. The article text is never written to disk.
 
 ## License
 

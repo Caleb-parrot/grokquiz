@@ -16,10 +16,11 @@ const (
 	maxPrompt = 320
 )
 
-// Category is one row in the start menu. Queries are search terms, not facts.
+// Category is one row in the start menu.
+// Query is sent to Grokipedia as a live search. It is not a list of questions.
 type Category struct {
-	Name    string
-	Queries []string
+	Name  string
+	Query string
 }
 
 // Hit is the slice of a search result the quiz needs.

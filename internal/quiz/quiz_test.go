@@ -93,10 +93,15 @@ func TestCategoriesHaveRoomForChoices(t *testing.T) {
 	if len(Categories) != 8 {
 		t.Fatalf("menu %d", len(Categories))
 	}
+	seen := map[string]bool{}
 	for _, c := range Categories {
-		if len(c.Queries) < 4 {
-			t.Fatalf("%s has %d queries", c.Name, len(c.Queries))
+		if c.Name == "" || c.Query == "" {
+			t.Fatalf("empty category: %+v", c)
 		}
+		if seen[c.Name] {
+			t.Fatalf("duplicate %s", c.Name)
+		}
+		seen[c.Name] = true
 	}
 	if _, ok := ByName("science"); !ok {
 		t.Fatal("science")
