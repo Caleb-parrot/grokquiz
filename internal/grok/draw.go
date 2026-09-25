@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand/v2"
+	"regexp"
 	"strings"
 	"time"
 
@@ -55,7 +56,7 @@ func (c *Client) Draw(ctx context.Context, cat quiz.Category, avoid map[string]b
 // rather than stop.
 func (c *Client) drawOpen(ctx context.Context, cat quiz.Category, avoid map[string]bool, rng *rand.Rand) (quiz.Question, error) {
 	var last error
-	for attempt := 0; attempt < 6; attempt++ {
+	for attempt := 0; attempt < 8; attempt++ {
 		q, err := c.oneOpen(ctx, cat, avoid, rng, rng.IntN(400))
 		if err == nil {
 			return q, nil
@@ -78,11 +79,12 @@ func (c *Client) drawOpen(ctx context.Context, cat quiz.Category, avoid map[stri
 func (c *Client) oneOpen(ctx context.Context, cat quiz.Category, avoid map[string]bool, rng *rand.Rand, offset int) (quiz.Question, error) {
 	ctx, cancel := context.WithTimeout(ctx, 8*time.Second)
 	defer cancel()
-	results, err := c.search(ctx, searchQuery(cat, rng), 12, offset)
+	query := searchQuery(cat, rng)
+	results, err := c.search(ctx, query, 12, offset)
 	if err != nil {
 		return quiz.Question{}, err
 	}
-	hits := usableHits(results, avoid)
+	hits := usableHits(results, avoid, query)
 	if len(hits) < 4 {
 		return quiz.Question{}, errNoMatch
 	}
@@ -113,12 +115,15 @@ func (c *Client) oneOpen(ctx context.Context, cat quiz.Category, avoid map[strin
 	return quiz.Question{}, last
 }
 
-func usableHits(results []grokipedia.SearchResult, avoid map[string]bool) []quiz.Hit {
+func usableHits(results []grokipedia.SearchResult, avoid map[string]bool, phrase string) []quiz.Hit {
 	var hits []quiz.Hit
 	seen := map[string]bool{}
 	for _, r := range results {
 		title := strings.TrimSpace(r.Title)
 		if title == "" || strings.TrimSpace(r.Snippet) == "" || junkTitle(title) {
+			continue
+		}
+		if !containsPhrase(title, phrase) && !containsPhrase(r.Snippet, phrase) {
 			continue
 		}
 		key := quiz.Fold(title)
@@ -132,6 +137,15 @@ func usableHits(results []grokipedia.SearchResult, avoid map[string]bool) []quiz
 		hits = append(hits, quiz.Hit{Title: title, Slug: r.Slug, Snippet: r.Snippet})
 	}
 	return hits
+}
+
+func containsPhrase(text, phrase string) bool {
+	phrase = strings.TrimSpace(phrase)
+	if phrase == "" || strings.TrimSpace(text) == "" {
+		return false
+	}
+	re := regexp.MustCompile(`(?i)\b` + regexp.QuoteMeta(phrase) + `\b`)
+	return re.MatchString(text)
 }
 
 func junkTitle(title string) bool {

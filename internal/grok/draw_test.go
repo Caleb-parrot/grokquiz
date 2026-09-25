@@ -17,7 +17,7 @@ func batch() []grokipedia.SearchResult {
 		out[i] = grokipedia.SearchResult{
 			Title:   title,
 			Slug:    title,
-			Snippet: title + " is a moon recorded in 1901 with a span of 42 units and a single well known form.",
+			Snippet: title + " is a moon in astronomy, recorded in 1901 with a span of 42 units and a single well known form.",
 		}
 	}
 	return out
@@ -81,13 +81,31 @@ func TestDrawUsesRandomSearchHits(t *testing.T) {
 	}
 }
 
+func TestUsableHitsRequiresWholePhrase(t *testing.T) {
+	hits := usableHits([]grokipedia.SearchResult{
+		{
+			Title:   "Amberjack Hole",
+			Slug:    "Amberjack_Hole",
+			Snippet: "Amberjack Hole is a submarine blue hole, a type of karst sinkhole, located in the Gulf of Mexico.",
+		},
+		{
+			Title:   "Black hole",
+			Slug:    "Black_hole",
+			Snippet: "A black hole is a region of spacetime where gravity is so strong that nothing can escape it.",
+		},
+	}, nil, "black hole")
+	if len(hits) != 1 || hits[0].Title != "Black hole" {
+		t.Fatalf("hits %+v", hits)
+	}
+}
+
 func TestDrawSkipsAskedTopic(t *testing.T) {
 	c := &Client{search: func(context.Context, string, int, int) ([]grokipedia.SearchResult, error) {
 		hits := batch()
 		hits = append(hits, grokipedia.SearchResult{
 			Title:   "Mars",
 			Slug:    "Mars",
-			Snippet: "Mars is a planet recorded in 1901 with a span of 42 units and a single well known form.",
+			Snippet: "Mars is a planet in astronomy, recorded in 1901 with a span of 42 units and a single well known form.",
 		})
 		return hits, nil
 	}}

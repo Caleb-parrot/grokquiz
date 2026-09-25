@@ -119,11 +119,74 @@ func Redact(s string, titles ...string) string {
 		return ""
 	}
 	if strings.HasPrefix(strings.ToLower(out), "this subject") {
-		return "This subject" + out[len("this subject"):]
+		out = "This subject" + out[len("this subject"):]
+	} else {
+		r := []rune(out)
+		r[0] = unicode.ToUpper(r[0])
+		out = string(r)
 	}
-	r := []rune(out)
-	r[0] = unicode.ToUpper(r[0])
-	return string(r)
+	return agree(out)
+}
+
+// agree fixes the verb after a plural title was replaced with singular
+// "This subject", as in "This subject are …" → "This subject is …".
+func agree(s string) string {
+	const lead = "This subject"
+	if !strings.HasPrefix(s, lead) {
+		return s
+	}
+	rest := s[len(lead):]
+	if strings.HasPrefix(rest, "'") || strings.HasPrefix(rest, "’") {
+		return s
+	}
+	fields := strings.Fields(rest)
+	skipped := 0
+	i := 0
+	for i < len(fields) && skipped < 2 {
+		w := strings.Trim(fields[i], ",;")
+		if w == "" {
+			i++
+			continue
+		}
+		switch strings.ToLower(w) {
+		case "also", "often", "usually", "typically":
+			i++
+			skipped++
+			continue
+		}
+		break
+	}
+	if i >= len(fields) {
+		return s
+	}
+	repl, ok := singularVerb(strings.ToLower(strings.Trim(fields[i], ",.;:")))
+	if !ok {
+		return s
+	}
+	fields[i] = swapVerb(fields[i], repl)
+	return lead + " " + strings.Join(fields, " ")
+}
+
+func singularVerb(w string) (string, bool) {
+	switch w {
+	case "are":
+		return "is", true
+	case "were":
+		return "was", true
+	case "have":
+		return "has", true
+	case "do":
+		return "does", true
+	case "don't":
+		return "doesn't", true
+	default:
+		return "", false
+	}
+}
+
+func swapVerb(token, repl string) string {
+	core := strings.Trim(token, ",.;:")
+	return repl + token[len(core):]
 }
 
 func sortByLen(ss []string) {
@@ -203,10 +266,20 @@ func leadsWith(snippet, title string) bool {
 	if want == "" {
 		return false
 	}
-	return strings.HasPrefix(got, want) ||
-		strings.HasPrefix(got, "the "+want) ||
-		strings.HasPrefix(got, "a "+want) ||
-		strings.HasPrefix(got, "an "+want)
+	return hasWordPrefix(got, want) ||
+		hasWordPrefix(got, "the "+want) ||
+		hasWordPrefix(got, "a "+want) ||
+		hasWordPrefix(got, "an "+want)
+}
+
+func hasWordPrefix(got, want string) bool {
+	if !strings.HasPrefix(got, want) {
+		return false
+	}
+	if len(got) == len(want) {
+		return true
+	}
+	return got[len(want)] == ' '
 }
 
 func trimPrompt(s string) string {

@@ -22,6 +22,27 @@ func TestRedactTitle(t *testing.T) {
 	}
 }
 
+func TestRedactPluralVerb(t *testing.T) {
+	got := Redact("Insect pheromones are chemical substances produced by insects for communication.", "Insect pheromones")
+	want := "This subject is chemical substances produced by insects for communication."
+	if got != want {
+		t.Fatalf("got %q", got)
+	}
+	mars := Redact("Mars is the fourth planet from the Sun, with a thin atmosphere and two small moons.", "Mars")
+	if !strings.HasPrefix(mars, "This subject is ") {
+		t.Fatalf("mars %q", mars)
+	}
+}
+
+func TestLeadRejectsLongerWord(t *testing.T) {
+	if leadsWith("Bird nests also function as indicators of pollution in the local environment.", "Bird nest") {
+		t.Fatal("bird nests matched bird nest")
+	}
+	if !leadsWith("Bird nest is a structure built by birds to hold their eggs and young.", "Bird nest") {
+		t.Fatal("exact title should lead")
+	}
+}
+
 func TestRedactPossessive(t *testing.T) {
 	got := Redact("Mars's orbit is 687 days long and was measured in 1609.", "Mars")
 	if strings.Contains(got, "Mars") {
