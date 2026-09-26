@@ -101,7 +101,7 @@ func (m model) onKey(key string) (tea.Model, tea.Cmd) {
 		return m.onPlay(key)
 	case phaseOver:
 		switch key {
-		case "enter":
+		case "enter", " ", "space":
 			m.run.NewRun()
 			m.note = ""
 			return m, m.startDraw()
@@ -111,7 +111,7 @@ func (m model) onKey(key string) (tea.Model, tea.Cmd) {
 		return m, nil
 	case phaseTrouble:
 		switch key {
-		case "enter":
+		case "enter", " ", "space":
 			m.note = ""
 			return m, m.startDraw()
 		case "esc":
@@ -140,7 +140,7 @@ func (m model) onMenu(key string) (tea.Model, tea.Cmd) {
 		if m.cursor >= len(m.cats) {
 			m.cursor = 0
 		}
-	case "enter":
+	case "enter", " ", "space":
 		return m.choose(m.cursor)
 	default:
 		if n, ok := menuNumber(key); ok {
@@ -183,7 +183,7 @@ func (m model) onPlay(key string) (tea.Model, tea.Cmd) {
 			m.cursor = 0
 		}
 		return m, nil
-	case "enter":
+	case "enter", " ", "space":
 		return m.answer(m.cursor)
 	default:
 		if n, ok := choiceKey(key); ok {
@@ -290,7 +290,7 @@ func (m model) viewMenu() string {
 		b.WriteByte('\n')
 	}
 	b.WriteByte('\n')
-	b.WriteString(mutedStyle.Render("j/k move    enter start    q quit"))
+	b.WriteString(mutedStyle.Render("j/k move    space/enter start    q quit"))
 	return b.String()
 }
 
@@ -324,7 +324,7 @@ func (m model) viewPlay() string {
 	b.WriteString("\n\n")
 	b.WriteString(bodyStyle.Width(m.inner()).Render(q.Prompt))
 	b.WriteString("\n\n")
-	letters := []string{"A", "B", "C", "D"}
+	letters := []string{"A", "S", "D", "F"}
 	for i, choice := range q.Choices {
 		letter := letters[i]
 		row := fmt.Sprintf(" %s  %s", letter, choice)
@@ -337,7 +337,7 @@ func (m model) viewPlay() string {
 		b.WriteByte('\n')
 	}
 	b.WriteByte('\n')
-	b.WriteString(mutedStyle.Render("a-d answer    j/k move    enter pick    esc menu"))
+	b.WriteString(mutedStyle.Render("a/s/d/f answer    j/k move    space/enter pick    esc menu"))
 	return b.String()
 }
 
@@ -360,7 +360,7 @@ func (m model) viewOver() string {
 		m.inner(),
 	))
 	b.WriteString("\n\n")
-	b.WriteString(mutedStyle.Render("enter again    esc categories    q quit"))
+	b.WriteString(mutedStyle.Render("space/enter again    esc categories    q quit"))
 	return b.String()
 }
 
@@ -376,7 +376,7 @@ func (m model) viewTrouble() string {
 	}
 	b.WriteString(mutedStyle.Width(m.inner()).Render(msg))
 	b.WriteString("\n\n")
-	b.WriteString(mutedStyle.Render("enter retry    esc categories    q quit"))
+	b.WriteString(mutedStyle.Render("space/enter retry    esc categories    q quit"))
 	return b.String()
 }
 
@@ -397,16 +397,10 @@ func spread(left, right string, width int) string {
 }
 
 func menuKey(i int) string {
-	if i == 9 {
-		return "0"
-	}
 	return fmt.Sprintf("%d", i+1)
 }
 
 func menuNumber(key string) (int, bool) {
-	if key == "0" {
-		return 9, true
-	}
 	if len(key) != 1 || key[0] < '1' || key[0] > '9' {
 		return 0, false
 	}
@@ -417,11 +411,11 @@ func choiceKey(key string) (int, bool) {
 	switch key {
 	case "a", "A", "1":
 		return 0, true
-	case "b", "B", "2":
+	case "s", "S", "2":
 		return 1, true
-	case "c", "C", "3":
+	case "d", "D", "3":
 		return 2, true
-	case "d", "D", "4":
+	case "f", "F", "4":
 		return 3, true
 	default:
 		return 0, false

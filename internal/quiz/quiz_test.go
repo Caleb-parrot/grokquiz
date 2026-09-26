@@ -111,7 +111,7 @@ func TestBuildRejectsThinSnippet(t *testing.T) {
 }
 
 func TestCategoriesHaveRoomForChoices(t *testing.T) {
-	if len(Categories) != 10 {
+	if len(Categories) != 9 {
 		t.Fatalf("menu %d", len(Categories))
 	}
 	seen := map[string]bool{}
@@ -124,7 +124,7 @@ func TestCategoriesHaveRoomForChoices(t *testing.T) {
 		}
 		seen[c.Name] = true
 	}
-	if _, ok := ByName("science"); !ok {
-		t.Fatal("science")
+	if _, ok := ByName("physical science"); !ok {
+		t.Fatal("physical science")
 	}
 }

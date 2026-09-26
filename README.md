@@ -2,6 +2,8 @@
 
 A local quiz in the terminal. Pick a category, then answer until you miss. The streak counts correct answers in a row.
 
+![Quizgrok question](quiz_example.png)
+
 Each question is a live search against [Grokipedia](https://grokipedia.com) through [`github.com/benoute/grokipedia-mcp/pkg/grokipedia`](https://github.com/benoute/grokipedia-mcp). The game asks which topic a short snippet belongs to. Snippets are not saved. The streak lives in memory until you quit.
 
 Built for [Omarchy](https://omarchy.org/). It is a TUI app, not an Omarchy shell plugin.
@@ -55,10 +57,10 @@ go run . -draw Space
 
 | Key | Where | What |
 | --- | --- | --- |
-| `1`-`9`, `0`, `j`/`k`, enter | Menu | Choose a category |
-| `a`-`d` or `1`-`4` | Question | Answer |
-| `j`/`k`, enter | Question | Move and pick |
-| enter | Miss | Same category, streak back to zero |
+| `1`-`9`, `j`/`k`, space, enter | Menu | Choose a category |
+| `a` `s` `d` `f` or `1`-`4` | Question | Answer |
+| `j`/`k`, space, enter | Question | Move and pick |
+| space, enter | Miss | Same category, streak back to zero |
 | esc | Question or miss | Category menu |
 | `q` | Anywhere | Quit |
 

@@ -49,7 +49,7 @@ func drawOnce(c *grok.Client, name string) error {
 		return err
 	}
 	fmt.Printf("%s\n\n%s\n\n", cat.Name, q.Prompt)
-	letters := []string{"A", "B", "C", "D"}
+	letters := []string{"A", "S", "D", "F"}
 	for i, choice := range q.Choices {
 		mark := " "
 		if i == q.Answer {
@@ -70,10 +70,10 @@ Questions come from Grokipedia search at the moment they are asked.
 Nothing is written to disk. The streak lasts until you quit.
 
 TUI keys:
-  1-9, 0 enter    pick a category
+  1-9 space enter pick a category
   j/k             move
-  a-d or 1-4      answer
-  enter           start, pick, or play again
+  a/s/d/f or 1-4  answer
+  space enter     start, pick, or play again
   esc             back to categories
   q               quit
 `
