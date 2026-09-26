@@ -1,4 +1,4 @@
-# quizgrok
+# quizez
 
 Local quiz in one terminal: question after question, one miss ends the run. A streak counter is kept in memory for the sitting.
 

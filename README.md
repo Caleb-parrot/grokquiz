@@ -1,8 +1,8 @@
-# quizgrok
+# quizez
 
 A local quiz in the terminal. Pick a category, then answer until you miss. The streak counts correct answers in a row.
 
-![Quizgrok question](quiz_example.png)
+![QuizEZ question](quiz_example.png)
 
 Each question is a live search against [Grokipedia](https://grokipedia.com) through [`github.com/benoute/grokipedia-mcp/pkg/grokipedia`](https://github.com/benoute/grokipedia-mcp). The game asks which topic a short snippet belongs to. Snippets are not saved. The streak lives in memory until you quit.
 
@@ -11,39 +11,39 @@ Built for [Omarchy](https://omarchy.org/). It is a TUI app, not an Omarchy shell
 ## Install on Arch / Omarchy
 
 ```bash
-git clone https://github.com/Caleb-parrot/quizgrok.git
-cd quizgrok
+git clone https://github.com/Caleb-parrot/quizez.git
+cd quizez
 makepkg -si
 ```
 
-That installs `/usr/bin/quizgrok` and a Super+Space launcher named **Quizgrok**.
+That installs `/usr/bin/quizez` and a Super+Space launcher named **QuizEZ**.
 
 `makepkg -s` installs Go from pacman. If Go is already on `PATH` from somewhere else, use `makepkg -si --nodeps` instead.
 
 If you already have Go and do not want a package:
 
 ```bash
-git clone https://github.com/Caleb-parrot/quizgrok.git
-cd quizgrok
-go build -o ~/.local/bin/quizgrok .
-omarchy tui install Quizgrok ~/.local/bin/quizgrok tile applications-games
+git clone https://github.com/Caleb-parrot/quizez.git
+cd quizez
+go build -o ~/.local/bin/quizez .
+omarchy tui install QuizEZ ~/.local/bin/quizez tile applications-games
 ```
 
 Optional Super-menu row — add this to `~/.config/omarchy/extensions/omarchy-menu.jsonc`:
 
 ```jsonc
-"quizgrok": {
+"quizez": {
   "icon": "",
-  "label": "Quizgrok",
+  "label": "QuizEZ",
   "description": "Grokipedia streak quiz",
-  "action": "omarchy-launch-or-focus-tui --app-id=TUI.tile quizgrok"
+  "action": "omarchy-launch-or-focus-tui --app-id=TUI.tile quizez"
 }
 ```
 
 Run from a checkout without installing:
 
 ```bash
-cd quizgrok
+cd quizez
 go run .
 ```
 

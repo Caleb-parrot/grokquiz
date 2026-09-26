@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/benoute/grokipedia-mcp/pkg/grokipedia"
-	"github.com/caleb-parrot/quizgrok/internal/quiz"
+	"github.com/caleb-parrot/quizez/internal/quiz"
 )
 
 func batch() []grokipedia.SearchResult {

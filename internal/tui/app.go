@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/caleb-parrot/quizgrok/internal/game"
-	"github.com/caleb-parrot/quizgrok/internal/grok"
-	"github.com/caleb-parrot/quizgrok/internal/quiz"
+	"github.com/caleb-parrot/quizez/internal/game"
+	"github.com/caleb-parrot/quizez/internal/grok"
+	"github.com/caleb-parrot/quizez/internal/quiz"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
@@ -240,7 +240,7 @@ func (m *model) startDraw() tea.Cmd {
 
 func (m model) View() string {
 	if m.width == 0 || m.height == 0 {
-		return "Quizgrok\n"
+		return "QuizEZ\n"
 	}
 	box := frameStyle.Render(m.body())
 	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, box)
@@ -274,7 +274,7 @@ func (m model) body() string {
 
 func (m model) viewMenu() string {
 	var b strings.Builder
-	b.WriteString(titleStyle.Render("QUIZGROK"))
+	b.WriteString(titleStyle.Render("QUIZEZ"))
 	b.WriteByte('\n')
 	b.WriteString(mutedStyle.Render("One miss ends the run."))
 	b.WriteString("\n\n")
@@ -381,7 +381,7 @@ func (m model) viewTrouble() string {
 }
 
 func (m model) head() string {
-	name := "Quizgrok"
+	name := "QuizEZ"
 	if m.cat != nil {
 		name = m.cat.Name
 	}

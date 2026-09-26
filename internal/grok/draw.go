@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/benoute/grokipedia-mcp/pkg/grokipedia"
-	"github.com/caleb-parrot/quizgrok/internal/quiz"
+	"github.com/caleb-parrot/quizez/internal/quiz"
 )
 
 // SearchFunc is grokipedia.Search, or a stand-in in tests.

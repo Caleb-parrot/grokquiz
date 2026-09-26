@@ -3,7 +3,7 @@ package game
 import (
 	"testing"
 
-	"github.com/caleb-parrot/quizgrok/internal/quiz"
+	"github.com/caleb-parrot/quizez/internal/quiz"
 )
 
 func sample() quiz.Question {

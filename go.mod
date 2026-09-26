@@ -1,4 +1,4 @@
-module github.com/caleb-parrot/quizgrok
+module github.com/caleb-parrot/quizez
 
 go 1.27.1
 

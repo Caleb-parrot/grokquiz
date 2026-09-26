@@ -2,7 +2,7 @@
 // Nothing here is written to disk.
 package game
 
-import "github.com/caleb-parrot/quizgrok/internal/quiz"
+import "github.com/caleb-parrot/quizez/internal/quiz"
 
 // Run is the current streak. Best lasts until the process exits.
 type Run struct {
